@@ -9,7 +9,7 @@ var targetPos = Vector2.ZERO
 var targetDir = Vector2.ZERO
 var targetDis: float = 0
 onready var parentOffset = Vector2(bossner.xOffset, bossner.yOffset)
-var offset = Vector2(100,20)
+var offset = Vector2(-100,20)
 
 
 var targetUpperPointingDir = Vector2.ZERO setget set_target_upper_pointing_direction
@@ -27,7 +27,8 @@ export(float) var damageStrength = 0
 var isCollidingWithPlayer = false
 var collidingBody
 
-signal newRightArmHealth()
+signal newLeftArmHealth()
+
 
 # HP --------------------------
 onready var maxHp: float = get_parent().maxArmHp # Was needed in order to add export keyword to hp
@@ -55,11 +56,11 @@ func set_hp(new_hp):
 	else:
 		hp = new_hp
 	
-	emit_signal("newRightArmHealth")
+	emit_signal("newLeftArmHealth")
 	
 	if(hp <= 0): 
 		death()
-		print("Bossner's right arm is no more...")
+		print("Bossner's left arm is no more...")
 
 func death():
 	queue_free()
@@ -79,8 +80,8 @@ func set_target_pointing_direction(dir: Vector2):
 	targetPointingDir = global_position.direction_to(global_position + dir)
 
 func set_default_pointing_directions():
-	set_target_pointing_direction(Vector2(-2,1))
-	set_target_upper_pointing_direction(Vector2(-1,-1))
+	set_target_pointing_direction(Vector2(2,1))
+	set_target_upper_pointing_direction(Vector2(1,-1))
 
 
 # Called when the node enters the scene tree for the first time.
@@ -140,12 +141,13 @@ func _on_Area2D_body_exited(body):
 
 
 
-func _on_AndersBossner_idleRight():
+func _on_AndersBossner_idleLeft():
 	pass
 
 
-func _on_AndersBossner_pierceRight():
+func _on_AndersBossner_pierceLeft():
 	lockOn = true
+	
 	yield(get_tree().create_timer(4), "timeout")
 	
 	lockOn = false
@@ -163,9 +165,9 @@ func _on_AndersBossner_pierceRight():
 	set_default_pointing_directions()
 
 
-func _on_AndersBossner_slapRight():
-	set_target_pointing_direction(Vector2.RIGHT)
-	set_target_upper_pointing_direction(Vector2(2,-1))
+func _on_AndersBossner_slapLeft():
+	set_target_pointing_direction(Vector2.LEFT)
+	set_target_upper_pointing_direction(Vector2(-2,1))
 	
 	yield(get_tree().create_timer(1), "timeout")
 	
@@ -176,8 +178,9 @@ func _on_AndersBossner_slapRight():
 	yield(get_tree().create_timer(1), "timeout")
 	
 	rotationalSpeed *= 3
-	targetPos = player.global_position + Vector2(player.global_position.x, 0)
-	set_target_pointing_direction(Vector2.LEFT)
+	#targetPos = player.global_position + Vector2(global_position.distance_to(player.global_position),0) #(player.global_position - global_position) #
+	player.global_position + Vector2(player.global_position.x, 0)
+	set_target_pointing_direction(Vector2.RIGHT)
 	
 	yield(get_tree().create_timer(3), "timeout")
 	
@@ -190,9 +193,9 @@ func _on_AndersBossner_slapRight():
 	speed /= 3
 
 
-func _on_AndersBossner_crushRight():
-	set_target_pointing_direction(Vector2.RIGHT)
-	set_target_upper_pointing_direction(Vector2.LEFT)
+func _on_AndersBossner_crushLeft():
+	set_target_pointing_direction(Vector2.LEFT)
+	set_target_upper_pointing_direction(Vector2.RIGHT)
 	
 	yield(get_tree().create_timer(0.6), "timeout")
 	
@@ -209,3 +212,4 @@ func _on_AndersBossner_crushRight():
 	
 	set_default_pointing_directions()
 	idle = true
+

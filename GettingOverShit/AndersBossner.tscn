@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://sprites/andersBossner.png" type="Texture" id=1]
 [ext_resource path="res://scripts/AndersBossner.gd" type="Script" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://sprites/skottnerRightUpperArm.png" type="Texture" id=4]
 [ext_resource path="res://scripts/RightForeArm.gd" type="Script" id=5]
 [ext_resource path="res://scripts/RightUpperArm.gd" type="Script" id=6]
+[ext_resource path="res://scripts/LeftForeArm.gd" type="Script" id=7]
+[ext_resource path="res://scripts/LeftUpperArm.gd" type="Script" id=8]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 30.0
@@ -35,8 +37,10 @@ height = 64.0
 collision_layer = 8
 collision_mask = 3
 script = ExtResource( 2 )
-maxHp = 300.0
-invincibilityTime = 0.2
+damageStrength = 42.0
+maxHp = 900.0
+maxArmHp = 500.0
+invincibilityTime = 0.4
 
 [node name="Sprite" type="Sprite" parent="."]
 z_index = 1
@@ -46,57 +50,146 @@ texture = ExtResource( 1 )
 shape = SubResource( 1 )
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 2 )
 
-[node name="RightArm" type="Node2D" parent="."]
+[node name="RightForeArm" type="RigidBody2D" parent="."]
 position = Vector2( 142, 0 )
-
-[node name="PinJointForearm-UpperArm" type="PinJoint2D" parent="RightArm"]
-node_a = NodePath("../RightForeArm")
-node_b = NodePath("../RightForeArm/RightUpperArm")
-
-[node name="RightForeArm" type="RigidBody2D" parent="RightArm"]
 collision_layer = 8
 collision_mask = 3
 script = ExtResource( 5 )
+damageStrength = 30.0
+invincibilityTime = 0.2
 
-[node name="Sprite" type="Sprite" parent="RightArm/RightForeArm"]
+[node name="PinJointForearm-UpperArm" type="PinJoint2D" parent="RightForeArm"]
+node_a = NodePath("..")
+node_b = NodePath("../RightUpperArm")
+
+[node name="Sprite" type="Sprite" parent="RightForeArm"]
 position = Vector2( 37, 1 )
 z_index = 3
 texture = ExtResource( 3 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightArm/RightForeArm"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightForeArm"]
 position = Vector2( 35, 1 )
 rotation = 1.5708
 shape = SubResource( 3 )
 
-[node name="Area2D" type="Area2D" parent="RightArm/RightForeArm"]
+[node name="Area2D" type="Area2D" parent="RightForeArm"]
+visible = false
 position = Vector2( 35, 1 )
+collision_layer = 16
+collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightArm/RightForeArm/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightForeArm/Area2D"]
 rotation = 1.5708
 shape = SubResource( 4 )
 
-[node name="RightUpperArm" type="RigidBody2D" parent="RightArm/RightForeArm"]
+[node name="RightUpperArm" type="RigidBody2D" parent="RightForeArm"]
 collision_layer = 8
 collision_mask = 3
 script = ExtResource( 6 )
 
-[node name="Sprite" type="Sprite" parent="RightArm/RightForeArm/RightUpperArm"]
+[node name="Sprite" type="Sprite" parent="RightForeArm/RightUpperArm"]
 position = Vector2( -38, 0 )
 z_index = 2
 texture = ExtResource( 4 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightArm/RightForeArm/RightUpperArm"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightForeArm/RightUpperArm"]
 position = Vector2( -37, 0 )
 rotation = 1.5708
 shape = SubResource( 5 )
 
-[node name="Area2D" type="Area2D" parent="RightArm/RightForeArm/RightUpperArm"]
+[node name="Area2D" type="Area2D" parent="RightForeArm/RightUpperArm"]
 position = Vector2( -37, 0 )
+collision_layer = 16
+collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightArm/RightForeArm/RightUpperArm/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightForeArm/RightUpperArm/Area2D"]
 rotation = 1.5708
 shape = SubResource( 6 )
+
+[node name="LeftForeArm" type="RigidBody2D" parent="."]
+position = Vector2( -138, -1 )
+collision_layer = 8
+collision_mask = 3
+script = ExtResource( 7 )
+damageStrength = 30.0
+invincibilityTime = 0.2
+
+[node name="PinJointForearm-UpperArm" type="PinJoint2D" parent="LeftForeArm"]
+node_a = NodePath("..")
+node_b = NodePath("../LeftUpperArm")
+
+[node name="Sprite" type="Sprite" parent="LeftForeArm"]
+position = Vector2( 37, 1 )
+z_index = 3
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftForeArm"]
+position = Vector2( 35, 1 )
+rotation = 1.5708
+shape = SubResource( 3 )
+
+[node name="Area2D" type="Area2D" parent="LeftForeArm"]
+position = Vector2( 35, 1 )
+collision_layer = 16
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftForeArm/Area2D"]
+rotation = 1.5708
+shape = SubResource( 4 )
+
+[node name="LeftUpperArm" type="RigidBody2D" parent="LeftForeArm"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="LeftForeArm/LeftUpperArm"]
+position = Vector2( -38, 0 )
+z_index = 2
+texture = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftForeArm/LeftUpperArm"]
+position = Vector2( -37, 0 )
+rotation = 1.5708
+shape = SubResource( 5 )
+
+[node name="Area2D" type="Area2D" parent="LeftForeArm/LeftUpperArm"]
+position = Vector2( -37, 0 )
+collision_layer = 16
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftForeArm/LeftUpperArm/Area2D"]
+rotation = 1.5708
+shape = SubResource( 6 )
+
+[node name="LeftEyePos" type="Position2D" parent="."]
+position = Vector2( -14, -8 )
+
+[node name="RightEyePos" type="Position2D" parent="."]
+position = Vector2( 13, -8 )
+
+[connection signal="crushLeft" from="." to="LeftForeArm" method="_on_AndersBossner_crushLeft"]
+[connection signal="crushRight" from="." to="RightForeArm" method="_on_AndersBossner_crushRight"]
+[connection signal="idleLeft" from="." to="LeftForeArm" method="_on_AndersBossner_idleLeft"]
+[connection signal="idleRight" from="." to="RightForeArm" method="_on_AndersBossner_idleRight"]
+[connection signal="pierceLeft" from="." to="LeftForeArm" method="_on_AndersBossner_pierceLeft"]
+[connection signal="pierceRight" from="." to="RightForeArm" method="_on_AndersBossner_pierceRight"]
+[connection signal="slapLeft" from="." to="LeftForeArm" method="_on_AndersBossner_slapLeft"]
+[connection signal="slapRight" from="." to="RightForeArm" method="_on_AndersBossner_slapRight"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="newRightArmHealth" from="RightForeArm" to="." method="_on_RightForeArm_newRightArmHealth"]
+[connection signal="body_entered" from="RightForeArm/Area2D" to="RightForeArm" method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="RightForeArm/Area2D" to="RightForeArm" method="_on_Area2D_body_exited"]
+[connection signal="body_entered" from="RightForeArm/RightUpperArm/Area2D" to="RightForeArm" method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="RightForeArm/RightUpperArm/Area2D" to="RightForeArm" method="_on_Area2D_body_exited"]
+[connection signal="newLeftArmHealth" from="LeftForeArm" to="." method="_on_LeftForeArm_newLeftArmHealth"]
+[connection signal="body_entered" from="LeftForeArm/Area2D" to="LeftForeArm" method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="LeftForeArm/Area2D" to="LeftForeArm" method="_on_Area2D_body_exited"]
+[connection signal="body_entered" from="LeftForeArm/LeftUpperArm/Area2D" to="LeftForeArm" method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="LeftForeArm/LeftUpperArm/Area2D" to="LeftForeArm" method="_on_Area2D_body_exited"]

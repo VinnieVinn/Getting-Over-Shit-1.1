@@ -22,9 +22,9 @@ mode = 2
 mass = 5.0
 gravity_scale = 2.0
 script = ExtResource( 4 )
-damageStrength = 40.0
+damageStrength = 1000.0
 lifeSteal = 0.1
-maxHp = 100.0
+maxHp = 10000.0
 invincibilityTime = 0.2
 
 [node name="Sprite" type="Sprite" parent="."]

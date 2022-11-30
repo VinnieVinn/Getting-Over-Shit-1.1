@@ -6,7 +6,7 @@ var velocity = Vector2()
 var targetDirection = Vector2()
 export(float) var movementLerpAmount: float = 1
 
-onready var target = get_parent().get_node_or_null("player")
+onready var target = $"/root/mainScene/player"
 export(float) var closestDistanceToTarget: float = 1
 
 var smooth_look_at = Vector2()
@@ -80,7 +80,6 @@ func _on_Area2D_body_entered(body):
 	if body.has_method("receive_damage"):
 		isCollidingWithPlayer = true
 		collidingBody = body
-
 func _on_Area2D_body_exited(body):
 	if body.has_method("receive_damage"):
 		isCollidingWithPlayer = false

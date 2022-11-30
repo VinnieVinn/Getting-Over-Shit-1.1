@@ -39,14 +39,14 @@ func set_hp(new_hp):
 	else:
 		hp = new_hp
 	
-	get_node("/root/mainScene/Hud").set_playerHealthBarAmount(new_hp)
-	print(hp, " hp") ####################
+	get_node("/root/mainScene/Hud").set_playerHealthBarAmount(new_hp, maxHp)
 	
 	if(hp <= 0): 
 		death()
 
 func death():
 	print("DEAD")
+	get_tree().quit()
 # /HP --------------------------
 
 
