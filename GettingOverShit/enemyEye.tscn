@@ -1,0 +1,100 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://KinematicEnemyBase.tscn" type="PackedScene" id=1]
+[ext_resource path="res://sprites/playerHealthBarProgress.png" type="Texture" id=2]
+[ext_resource path="res://sprites/eyeEnemySprite.png" type="Texture" id=3]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends \"res://scripts/KinematicEnemyBase.gd\"
+
+
+
+var targetDirection = Vector2()
+export(float) var movementLerpAmount: float = 1 # 0.05 recommended
+
+onready var target = get_parent().get_node_or_null(\"player\")
+export(float) var closestDistanceToTarget: float = 1
+
+var smooth_look_at = Vector2()
+
+
+var isCollidingWithPlayer: bool = false
+var collidingBody
+
+
+func set_healthBarAmount(newAmount: float):
+	$HealthBar.value = newAmount
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Sprite.flip_h = true
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	if isCollidingWithPlayer:
+		collidingBody.receive_damage(damageStrength)
+
+
+func _physics_process(_delta):
+	# Movement:
+	# if distance to player > closestDistanceToTarget: accelerate
+	if global_position.distance_to(target.global_position) > closestDistanceToTarget:
+		targetDirection = lerp(targetDirection, global_position.direction_to(target.global_position), movementLerpAmount) # A delayed lock-on to the player (thansk to lerp())
+		velocity = targetDirection * speed
+	else:
+		velocity = Vector2.ZERO
+	
+	# Smooth rotation pointing to the player:
+	smooth_look_at = lerp(smooth_look_at, target.global_position, 0.1)
+	$Sprite.look_at(smooth_look_at)
+
+
+func _on_Area2D_body_entered(body):
+	if body.has_method(\"receive_damage\"):
+		isCollidingWithPlayer = true
+		collidingBody = body
+
+func _on_Area2D_body_exited(body):
+	if body.has_method(\"receive_damage\"):
+		isCollidingWithPlayer = false
+"
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 9.0
+
+[node name="EnemyEye" instance=ExtResource( 1 )]
+script = SubResource( 3 )
+speed = 60.0
+damageStrength = 20.0
+maxHp = 100.0
+invincibilityTime = 0.2
+movementLerpAmount = 0.05
+closestDistanceToTarget = 10.0
+
+[node name="Sprite" parent="." index="0"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource( 1 )
+
+[node name="Area2D" type="Area2D" parent="." index="2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" index="0"]
+shape = SubResource( 2 )
+
+[node name="HealthBar" type="TextureProgress" parent="." index="3"]
+margin_left = -7.0
+margin_top = -14.0
+margin_right = 93.0
+margin_bottom = -2.0
+rect_scale = Vector2( 0.14, 0.2 )
+value = 100.0
+texture_progress = ExtResource( 2 )
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
